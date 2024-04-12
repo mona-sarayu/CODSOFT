@@ -1,0 +1,133 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+iris= pd.read_csv("/content/iris-flower-dataset/IRIS.csv")
+print(iris.shape)
+iris.tail()
+print(iris.columns)
+iris["species"].value_counts()
+iris.plot(kind='scatter', x= 'sepal_length', y='sepal_width');
+plt.grid()
+plt.show()
+sns.set_style("whitegrid");
+sns.FacetGrid(iris, hue="species", height=4) \
+   .map(plt.scatter, "sepal_length","sepal_width") \
+   .add_legend();
+plt.show();
+#Pair-plot   #4-D Dataset
+plt.close();
+sns.set_style("whitegrid");
+sns.pairplot(iris, hue="species", height=3, diag_kind="kde");
+plt.show()
+sns.FacetGrid(iris, hue="species", height=5) \
+   .map(sns.distplot, "petal_length") \
+   .add_legend()
+plt.grid()
+plt.show()
+#Density plot
+# These smooth lines are PDF.
+sns.FacetGrid(iris, hue="species", height=5) \
+   .map(sns.distplot, "petal_width") \
+   .add_legend()
+plt.grid()
+plt.show()
+sns.FacetGrid(iris, hue="species", height=5) \
+   .map(sns.distplot, "sepal_length") \
+   .add_legend()
+plt.grid()
+plt.show()
+#spread in above graph, this is variance
+sns.FacetGrid(iris, hue="species", height=5) \
+   .map(sns.distplot, "sepal_width") \
+   .add_legend()
+plt.grid()
+plt.show()
+iris_setosa = iris.loc[iris["species"] == "Iris-setosa"]
+iris_virginica = iris.loc[iris["species"] == "Iris-virginica"]
+iris_versicolor = iris.loc[iris["species"] == "Iris-versicolor"]
+counts, bin_edges = np.histogram(iris_setosa["petal_length"], bins=10)
+
+# Storing the given two arrays
+counts, bin_edges = np.histogram(iris_setosa["petal_length"], bins=10)
+pdf = counts / (sum(counts))
+
+print(pdf)
+print(bin_edges)
+
+# Computing CDF
+cdf = np.cumsum(pdf)
+
+# Plotting
+plt.plot(bin_edges[1:], pdf, label='PDF')
+plt.plot(bin_edges[1:], cdf, label='CDF')
+
+# Adding legend
+plt.legend()
+
+# Adding grid
+plt.grid()
+
+# Showing the plot
+plt.show()
+print("Means:")
+print(np.mean(iris_setosa["petal_length"]))
+#mean with an outlier
+print(np.mean(np.append(iris_setosa["petal_length"],50)));
+print(np.mean(iris_virginica["petal_length"]))
+print(np.mean(iris_versicolor["petal_length"]))
+
+print("\nStd-dev:")
+print(np.std(iris_setosa["petal_length"]));
+print(np.std(iris_virginica["petal_length"]))
+print(np.std(iris_versicolor["petal_length"]))
+#variance is spread in graph.
+#variance is average of (Xi-mean)^2
+# std deviation = sqrt(var)
+print("Medians:")
+print(np.median(iris_setosa["petal_length"]))
+#mean with an outlier
+print(np.median(np.append(iris_setosa["petal_length"],50)));
+print(np.median(iris_virginica["petal_length"]))
+print(np.median(iris_versicolor["petal_length"]))
+
+print("\nQuantiles:")
+print(np.percentile(iris_setosa["petal_length"],np.arange(0, 100, 25)));
+print(np.percentile(iris_virginica["petal_length"],np.arange(0, 100, 25)))
+print(np.percentile(iris_versicolor["petal_length"],np.arange(0, 100, 25)))
+
+print("\n90th Percentiles:")
+print(np.percentile(iris_setosa["petal_length"],90));
+print(np.percentile(iris_virginica["petal_length"],90))
+print(np.percentile(iris_versicolor["petal_length"],90))
+
+from statsmodels import robust
+print("\nMedian Absolute Deviation")
+print(robust.mad(iris_setosa["petal_length"]))
+print(robust.mad(iris_virginica["petal_length"]))
+print(robust.mad(iris_versicolor["petal_length"]))
+#nth percentile is just like, "Hey datapoint, What's your rank cutie?, oh it's n"
+sns.boxplot(x='species', y='petal_length', data=iris)
+plt.show()
+# 1st line in box-plot shows 25th percentile, and for 2nd and 3rd, 
+# 50th and 75th respectively
+# Whiskers are like threshold(whiskers are start and end lines)
+sns.violinplot(x='species', y='petal_length', data=iris)
+plt.show()
+
+#it is a combination of histograms(pdf) and box-plot
+#black center area is box-plot
+#and the leaf portion is pdf
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Assuming iris_setosa is a DataFrame with columns 'petal_length' and 'petal_width'
+sns.set(style="whitegrid")
+
+# Create a custom colormap with dark blue in the center
+cmap = sns.cubehelix_palette(as_cmap=True, dark=0.5, light=1, reverse=True)
+
+# Plot 2D density plot with contours
+sns.kdeplot(x='petal_length', y='petal_width', data=iris_setosa, cmap=cmap, fill=True, levels=5, thresh=0.2)
+
+plt.show()
